@@ -1,12 +1,21 @@
-import { Controller, Get } from '@nestjs/common'
+import { Body, Controller, Get, Post } from '@nestjs/common'
 import { AppService } from './app.service'
+import { PDFService } from './pdf/pdf.service'
 
-@Controller()
+@Controller('test')
 export class AppController {
-    constructor(private readonly appService: AppService) {}
+    constructor(
+        private readonly appService: AppService,
+        private readonly pdfService: PDFService,
+    ) {}
 
-    @Get()
-    getHello(): string {
-        return this.appService.getHello()
+    @Get('test')
+    async test() {
+        return 'hello'
+    }
+
+    @Post('hello')
+    async testParse(@Body() data: { url: string }) {
+        return this.pdfService.parsePDF(data.url)
     }
 }

@@ -1,12 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import cookieParser from 'cookie-parser';
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+    const app = await NestFactory.create(AppModule)
 
-  app.use(cookieParser())
+    app.use(cookieParser())
 
-  await app.listen(String(process.env.PORT))
+    app.setGlobalPrefix('api')
+
+    await app.listen(process.env.PORT!)
 }
-bootstrap();
+bootstrap()

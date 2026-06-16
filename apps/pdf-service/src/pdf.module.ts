@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common'
 import { PDFService } from './pdf.service'
 import { ConfigModule } from '@nestjs/config'
+import { PDFParseService } from './pdf-parse.service'
+import { PDFController } from './pdf.controller'
 
 @Module({
     imports: [
@@ -8,7 +10,7 @@ import { ConfigModule } from '@nestjs/config'
             isGlobal: true,
         }),
     ],
-    controllers: [PDFService],
-    providers: [PDFService],
+    controllers: [PDFController],
+    providers: [PDFService, PDFParseService],
 })
 export class PdfModule {}

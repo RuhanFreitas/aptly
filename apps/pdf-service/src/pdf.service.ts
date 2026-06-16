@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PDFParse, TextResult } from 'pdf-parse'
+import { TextResult } from 'pdf-parse'
 import { PDFParseService } from './pdf-parse.service'
 
 @Injectable()
