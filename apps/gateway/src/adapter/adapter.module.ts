@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common'
-import { PDFService } from './pdf.service'
+import { AdapterController } from './adapter.controller'
+import { AdapterService } from './adapter.service'
 import { ClientsModule, Transport } from '@nestjs/microservices'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 
 @Module({
-    controllers: [],
-    providers: [PDFService],
     imports: [
         ClientsModule.registerAsync([
             {
-                name: 'PDF_SERVICE',
+                name: 'ADAPTER_SERVICE',
                 imports: [ConfigModule],
                 inject: [ConfigService],
                 useFactory: (config: ConfigService) => {
@@ -23,7 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
                         transport: Transport.RMQ,
                         options: {
                             urls: [url],
-                            queue: 'pdf_queue',
+                            queue: 'adapter_queue',
                             queueOptions: {
                                 durable: false,
                             },
@@ -33,6 +32,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
             },
         ]),
     ],
-    exports: [PDFService],
+    exports: [AdapterService],
+    controllers: [AdapterController],
+    providers: [AdapterService],
 })
-export class PDFModule {}
+export class AdapterModule {}

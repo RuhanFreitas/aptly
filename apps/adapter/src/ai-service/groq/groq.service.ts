@@ -1,16 +1,41 @@
 import { Injectable } from '@nestjs/common'
-import { generateText } from 'ai'
-import { groq } from '@ai-sdk/groq'
 import { AiService } from '../ai.service'
+import Groq from 'groq-sdk'
 
 @Injectable()
 export class GroqService implements AiService {
+    groq: Groq
+
+    constructor() {
+        this.groq = new Groq()
+    }
+
     async adapt() {
-        const { text } = await generateText({
-            model: groq('llama-3.3-70b-versatile'),
-            prompt: 'Write a vegetarian lasagna recipe for 4 people.',
+        const response = await this.groq.chat.completions.create({
+            model: 'openai/gpt-oss-120b',
+            messages: [
+                {
+                    role: 'system',
+                    content: `
+
+                    You're a history professor. Give me a lecture.
+
+                    Always return your response in JSON.
+                    
+                    `,
+                },
+                {
+                    role: 'user',
+                    content: 'veg lasgna recipe',
+                },
+            ],
+            response_format: {
+                type: 'json_object',
+            },
         })
 
-        return text
+        const result = JSON.parse(response.choices[0]?.message.content || '{}')
+
+        return result
     }
 }

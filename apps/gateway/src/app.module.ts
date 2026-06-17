@@ -3,6 +3,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
 import { PDFModule } from './pdf/pdf.module'
+import { AdapterModule } from './adapter/adapter.module'
 
 @Module({
     imports: [
@@ -10,6 +11,7 @@ import { PDFModule } from './pdf/pdf.module'
             isGlobal: true,
         }),
         PDFModule,
+        AdapterModule,
     ],
     controllers: [AppController],
     providers: [AppService],
