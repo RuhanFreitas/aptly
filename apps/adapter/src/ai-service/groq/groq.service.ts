@@ -18,18 +18,44 @@ export interface LanguageMetrics {
 @Injectable()
 export class GroqService implements AiService {
     groq: Groq
+    private readonly CHUNK_SIZE_LIMIT = 16000
 
     constructor() {
         this.groq = new Groq()
     }
 
     async adapt(languageMetrics: LanguageMetrics, content: string) {
-        const response = await this.groq.chat.completions.create({
-            model: 'openai/gpt-oss-120b',
-            messages: [
-                {
-                    role: 'system',
-                    content: `
+        if (content.length <= this.CHUNK_SIZE_LIMIT) {
+            return this.callGroqApi(languageMetrics, content)
+        }
+
+        const chunks = this.splitContentIntoChunks(
+            content,
+            this.CHUNK_SIZE_LIMIT,
+        )
+        const results: any[] = []
+
+        for (const chunk of chunks) {
+            const chunkResult = await this.callGroqApi(languageMetrics, chunk)
+            if (chunkResult) {
+                results.push(chunkResult)
+            }
+        }
+
+        return this.consolidateResults(results)
+    }
+
+    private async callGroqApi(
+        languageMetrics: LanguageMetrics,
+        chunkContent: string,
+    ) {
+        try {
+            const response = await this.groq.chat.completions.create({
+                model: 'openai/gpt-oss-120b',
+                messages: [
+                    {
+                        role: 'system',
+                        content: `
 
                     # Role
 
@@ -288,23 +314,61 @@ export class GroqService implements AiService {
                     6. Return only the rewritten content unless explicitly asked to explain changes.
                     7. If the text contains medical or scientific information, preserve technical correctness while adjusting complexity according to the Simplification and Detail Level parameters.
                     8. Return the answer in JSON format.
-{
-
+                    {
                     
                     `,
+                    },
+                    {
+                        role: 'user',
+                        content: `${chunkContent}`,
+                    },
+                ],
+                response_format: {
+                    type: 'json_object',
                 },
-                {
-                    role: 'user',
-                    content: `${content}`,
-                },
-            ],
-            response_format: {
-                type: 'json_object',
-            },
-        })
+            })
 
-        const result = JSON.parse(response.choices[0]?.message.content || '{}')
+            return JSON.parse(response.choices[0]?.message.content || '{}')
+        } catch (error) {
+            console.error('Error processing block in Groq:', error)
+            throw error
+        }
+    }
 
-        return result
+    private splitContentIntoChunks(text: string, maxLength: number): string[] {
+        const chunks: string[] = []
+        let currentIndex = 0
+
+        while (currentIndex < text.length) {
+            let chunkEnd = currentIndex + maxLength
+
+            if (chunkEnd < text.length) {
+                const lastSpace = text.lastIndexOf(' ', chunkEnd)
+                if (lastSpace > currentIndex) {
+                    chunkEnd = lastSpace
+                }
+            }
+
+            chunks.push(text.substring(currentIndex, chunkEnd).trim())
+            currentIndex = chunkEnd
+        }
+
+        return chunks
+    }
+
+    private consolidateResults(results: any[]) {
+        const mergedText = results
+            .map(
+                (res) =>
+                    res.text ||
+                    res.content ||
+                    res.adapted_content ||
+                    JSON.stringify(res),
+            )
+            .join('\n\n')
+
+        return {
+            adapted_content: mergedText,
+        }
     }
 }
