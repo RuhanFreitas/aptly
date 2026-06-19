@@ -1,19 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { AiService } from '../ai.service'
+import type { LanguageMetrics } from '@aptly/types'
 import Groq from 'groq-sdk'
-
-type metricValue = 0 | 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1
-
-export interface LanguageMetrics {
-    directness: metricValue
-    detailLevel: metricValue
-    readingComfort: metricValue
-    focusAssistance: metricValue
-    guidance: metricValue
-    simplification: metricValue
-    contextExpansion: metricValue
-    visualIntensity: metricValue
-}
 
 @Injectable()
 export class GroqService implements AiService {

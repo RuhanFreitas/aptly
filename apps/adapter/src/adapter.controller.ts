@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
 import { AdapterService } from './adapter.service'
 import { MessagePattern, Payload } from '@nestjs/microservices'
-import { LanguageMetrics } from './ai-service/groq/groq.service'
+import type { LanguageMetrics } from '@aptly/types'
 
 @Controller()
 export class AdapterController {
