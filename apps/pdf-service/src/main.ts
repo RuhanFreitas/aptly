@@ -8,7 +8,7 @@ async function bootstrap() {
         {
             transport: Transport.RMQ,
             options: {
-                urls: [process.env.RABBITMQ_URL!],
+                urls: [process.env.RBMQ_URL!],
                 queue: 'pdf_queue',
                 queueOptions: {
                     durable: false,

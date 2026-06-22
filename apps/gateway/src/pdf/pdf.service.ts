@@ -10,10 +10,10 @@ export class PDFService {
     ) {}
 
     async parsePDF(url: string) {
-        const response$ = this.client.send('aptly.event.parse_pdf', {
+        const response = this.client.send('aptly.event.parse_pdf', {
             url,
         })
 
-        return firstValueFrom(response$)
+        return firstValueFrom(response)
     }
 }

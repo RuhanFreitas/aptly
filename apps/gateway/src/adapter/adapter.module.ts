@@ -3,9 +3,11 @@ import { AdapterController } from './adapter.controller'
 import { AdapterService } from './adapter.service'
 import { ClientsModule, Transport } from '@nestjs/microservices'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { PDFModule } from '../pdf/pdf.module'
 
 @Module({
     imports: [
+        PDFModule,
         ClientsModule.registerAsync([
             {
                 name: 'ADAPTER_SERVICE',

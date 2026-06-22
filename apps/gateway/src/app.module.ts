@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
 import { PDFModule } from './pdf/pdf.module'
 import { AdapterModule } from './adapter/adapter.module'
+import { AdapterController } from './adapter/adapter.controller'
 
 @Module({
     imports: [
@@ -13,7 +12,7 @@ import { AdapterModule } from './adapter/adapter.module'
         PDFModule,
         AdapterModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [AdapterController],
+    providers: [],
 })
 export class AppModule {}
