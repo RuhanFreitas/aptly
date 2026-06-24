@@ -127,6 +127,8 @@ export function AdapterWorkspace() {
             placeholder="https://example.com/document.pdf"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            // Browser extensions / form fillers mutate inputs before hydration.
+            suppressHydrationWarning
             className="mt-3 h-11 w-full rounded-xl border border-mist-300 bg-paper px-3.5 text-sm outline-none transition-colors focus:border-ink"
           />
         </section>
@@ -187,6 +189,8 @@ export function AdapterWorkspace() {
           className="w-full"
           onClick={handleAdapt}
           disabled={!canAdapt}
+          // Some extensions strip/toggle `disabled` on buttons before hydration.
+          suppressHydrationWarning
         >
           {loading ? (
             <>
