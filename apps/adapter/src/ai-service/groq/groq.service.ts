@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { AiService } from '../ai.service'
-import type { LanguageMetrics } from '@aptly/types'
 import Groq from 'groq-sdk'
+import LanguageMetricsDTO from '@aptly/dtos'
 
 @Injectable()
 export class GroqService implements AiService {
@@ -12,7 +12,7 @@ export class GroqService implements AiService {
         this.groq = new Groq()
     }
 
-    async adapt(languageMetrics: LanguageMetrics, content: string) {
+    async adapt(languageMetrics: LanguageMetricsDTO, content: string) {
         if (content.length <= this.CHUNK_SIZE_LIMIT) {
             return this.callGroqApi(languageMetrics, content)
         }
@@ -34,7 +34,7 @@ export class GroqService implements AiService {
     }
 
     private async callGroqApi(
-        languageMetrics: LanguageMetrics,
+        languageMetrics: LanguageMetricsDTO,
         chunkContent: string,
     ) {
         try {

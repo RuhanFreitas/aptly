@@ -39,5 +39,5 @@ export class LanguageMetricsDTO {
     @Min(0)
     @Max(1)
     @IsNumber()
-    visualIntensitiy: number
+    visualIntensity: number
 }

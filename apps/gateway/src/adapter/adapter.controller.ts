@@ -1,7 +1,7 @@
-import type { LanguageMetrics } from '@aptly/types'
 import { Body, Controller, Post } from '@nestjs/common'
 import { PDFService } from '../pdf/pdf.service'
 import { AdapterService } from './adapter.service'
+import LanguageMetricsDTO from '@aptly/dtos'
 
 @Controller('adapter')
 export class AdapterController {
@@ -12,7 +12,7 @@ export class AdapterController {
 
     @Post('')
     async adapt(
-        @Body() body: { languageMetrics: LanguageMetrics; url: string },
+        @Body() body: { languageMetrics: LanguageMetricsDTO; url: string },
     ) {
         const pdfResult = await this.pdfService.parsePDF(body.url)
         const content = pdfResult.text

@@ -1,5 +1,5 @@
-import type { LanguageMetrics } from '@aptly/types'
+import LanguageMetricsDTO from '@aptly/dtos'
 
 export abstract class AiService {
-    adapt(languageMetrics: LanguageMetrics, content: string): any {}
+    adapt(languageMetrics: LanguageMetricsDTO, content: string): any {}
 }
