@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/*
+  Aptly design system.
+  Monochrome by intent: two shades of black, two shades of white,
+  plus a calm neutral ramp. Accessibility and calm reading come first.
+*/
+@theme {
+  /* Blacks */
+  --color-ink: #0a0a0b;
+  --color-graphite: #16171a;
+
+  /* Whites */
+  --color-paper: #ffffff;
+  --color-bone: #f5f5f3;
+
+  /* Neutral ramp (warm-leaning grays) */
+  --color-mist-50: #fafafa;
+  --color-mist-100: #f2f2f1;
+  --color-mist-200: #e6e6e4;
+  --color-mist-300: #d4d4d2;
+  --color-mist-400: #a3a3a0;
+  --color-mist-500: #74746f;
+  --color-mist-600: #52524d;
+  --color-mist-700: #3a3a36;
+  --color-mist-800: #26262a;
+  --color-mist-900: #161618;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-4xl: 2rem;
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-mist-200);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
+
+@layer utilities {
+  /* Subtle dotted/grid backdrops used across marketing sections */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(10, 10, 11, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 11, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .mask-fade-edges {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 12%,
+      black 88%,
+      transparent
+    );
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
