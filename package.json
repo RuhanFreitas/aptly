@@ -9,7 +9,9 @@
     "check-types": "turbo run check-types"
   },
   "overrides": {
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "prettier": "^3.7.4",

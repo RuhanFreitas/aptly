@@ -302,6 +302,8 @@ export class GroqService implements AiService {
                     6. Return only the rewritten content unless explicitly asked to explain changes.
                     7. If the text contains medical or scientific information, preserve technical correctness while adjusting complexity according to the Simplification and Detail Level parameters.
                     8. Return the answer in JSON format.
+                    9. The content must be returned using HTML tags to make sure the content is delivered already formatted to the user.
+                    10. Add images tags with images that matches with the content.
                     {
                     
                     `,

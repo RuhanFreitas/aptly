@@ -2,6 +2,8 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 import { cn } from "@/lib/utils";
 
 interface OutputViewProps {
@@ -36,6 +38,12 @@ export function OutputView({
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        // The adapted content can contain raw HTML tags from the AI model.
+        // `rehype-raw` parses that HTML so it renders as real elements instead
+        // of leaking through as escaped text, and `rehype-sanitize` strips
+        // anything unsafe (scripts, event handlers, etc.) since this content is
+        // model-generated and must not be trusted.
+        rehypePlugins={[rehypeRaw, rehypeSanitize]}
         components={{
           h1: ({ children }) => (
             <h1

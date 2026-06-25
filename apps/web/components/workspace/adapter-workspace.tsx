@@ -20,6 +20,7 @@ import {
   type DimensionKey,
 } from "@/lib/dimensions";
 import { requestAdaptation } from "@/lib/adapt";
+import { downloadNodeAsPdf } from "@/lib/export-pdf";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DimensionControl } from "./dimension-control";
@@ -34,8 +35,10 @@ export function AdapterWorkspace() {
   const [error, setError] = useState<string | null>(null);
   const [output, setOutput] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   const wordCount = useMemo(
     () => (output ? output.trim().split(/\s+/).filter(Boolean).length : 0),
@@ -93,15 +96,16 @@ export function AdapterWorkspace() {
     setTimeout(() => setCopied(false), 1800);
   };
 
-  const handleDownload = () => {
-    if (!output) return;
-    const blob = new Blob([output], { type: "text/markdown" });
-    const href = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = href;
-    anchor.download = "aptly-adapted.md";
-    anchor.click();
-    URL.revokeObjectURL(href);
+  const handleDownload = async () => {
+    if (!output || !outputRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      await downloadNodeAsPdf(outputRef.current, "aptly-adapted.pdf");
+    } catch {
+      setError("We couldn't generate the PDF. Please try again.");
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -235,10 +239,15 @@ export function AdapterWorkspace() {
               <button
                 type="button"
                 onClick={handleDownload}
-                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs text-mist-600 transition-colors hover:bg-mist-100 hover:text-ink"
+                disabled={downloading}
+                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs text-mist-600 transition-colors hover:bg-mist-100 hover:text-ink disabled:opacity-60"
               >
-                <Download className="size-3.5" />
-                Download
+                {downloading ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <Download className="size-3.5" />
+                )}
+                {downloading ? "Preparing…" : "Download PDF"}
               </button>
             </div>
           )}
@@ -258,11 +267,13 @@ export function AdapterWorkspace() {
           )}
 
           {!loading && !error && output && (
-            <OutputView
-              text={output}
-              readingComfort={metrics.readingComfort}
-              visualIntensity={metrics.visualIntensity}
-            />
+            <div ref={outputRef} className="bg-paper">
+              <OutputView
+                text={output}
+                readingComfort={metrics.readingComfort}
+                visualIntensity={metrics.visualIntensity}
+              />
+            </div>
           )}
 
           {!loading && !error && !output && <EmptyState />}
